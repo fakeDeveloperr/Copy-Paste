@@ -115,6 +115,62 @@ Since you now see how the data arrives, would you like a **JavaScript snippet** 
 
 
 
+Since you’ve checked all the boxes (including Webhooks and Comments), your ServiceNow instance now has **full-spectrum access** to Figma. You have moved beyond a simple "read-only" integration and can now build a truly **autonomous Design-to-Code pipeline**.
+
+With all permissions active, here is how you can leverage that "Write" access to create a professional developer workflow:
+
+### 1. Automated "Tech Review" Comments
+Now that your agent has `file_comments:write`, it can act as a **Pre-flight Checker**. 
+* **The Logic:** When a designer updates a file, ServiceNow "hears" it (via Webhooks). The AI Agent scans the design and automatically posts a comment on specific layers if they aren't "ServiceNow-ready."
+* **Example Comment:** *"@Designer, this layout uses a non-standard grid. I will need to build a custom CSS Flexbox container for this instead of using the standard Bootstrap row."*
+
+### 2. Bidirectional Status Syncing
+You can keep designers in the loop without them ever leaving Figma.
+* **The Workflow:** When a ServiceNow developer moves a Task to **"In Progress"** or **"Resolved,"** a Business Rule in ServiceNow can trigger the AI Agent to post a comment on the Figma frame.
+* **Achievement:** No more designers asking, "Is this built yet?" The status is written directly on their canvas.
+
+---
+
+### 3. Implementation: The "Talk Back" Script
+To use the `write` capability, your ServiceNow instance needs to send a `POST` request to Figma's comment endpoint. Here is a simplified version of what that logic looks like in a **ServiceNow Script Action**:
+
+```javascript
+var figmaFileKey = "YOUR_FILE_KEY";
+var figmaToken = "figma_your_token_here";
+
+var sm = new sn_ws.RESTMessageV2();
+sm.setEndpoint("https://api.figma.com/v1/files/" + figmaFileKey + "/comments");
+sm.setHttpMethod("POST");
+sm.setRequestHeader("X-Figma-Token", figmaToken);
+
+// The AI Agent's feedback
+var payload = {
+    "message": "[ServiceNow AI] I've analyzed this frame. Suggested Widget: 'Data Table'. Estimated Build Time: 2 hours.",
+    "client_meta": { "x": 100, "y": 100 } // Positions the comment on the canvas
+};
+
+sm.setRequestBody(JSON.stringify(payload));
+var response = sm.execute();
+```
+
+---
+
+### 4. What's Next?
+Now that your **permissions (MCP Server)** are fully configured in **AI Agent Studio**, the "engine" is ready. Your next move is to define the **Instructions** for your Agent so it knows *when* to use these powers.
+
+
+
+### Pro-Tip: The "Master" Prompt
+In your AI Agent's **System Instructions**, add this line to take advantage of your new setup:
+> *"Whenever you analyze a Figma design, always post a technical summary comment back to the Figma file using the file_comments:write tool so the design team sees your implementation plan."*
+
+**Would you like to try a real test? Give me a link to a public Figma file (or one of yours), and we can draft the exact prompt you should give your AI Agent to see if it can 'read' it correctly.**
+
+
+
+
+
+
 
 
 
