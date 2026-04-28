@@ -1,3 +1,24 @@
+Figma Webhooks
+1. Webhooks: READ (The "Listener")
+With webhooks:read, your ServiceNow instance can listen for specific events in Figma. When an event happens, Figma "pokes" ServiceNow to tell it.
+
+File Update Notifications: Whenever a designer hits "Save" or finishes a major update, ServiceNow can automatically trigger a task for the developer to review the new designs.
+
+New Comment Monitoring: If a designer leaves a comment in Figma like "@Dev check the button color," ServiceNow can automatically create a Visual Task Board (VTB) card or an Incident so you don't miss it.
+
+Library Publish Alerts: If your company's design system (Design Tokens) changes in Figma, ServiceNow can "listen" for that update and prompt you to run a script that updates the CSS variables across your entire portal.
+
+2. Webhooks: WRITE (The "Manager")
+This scope is for creating and managing the listeners themselves. It’s what allows your code to "register" or "delete" a subscription to Figma events.
+
+Dynamic Automation: You can build a ServiceNow sub-flow that says: "When a new Project is created in ServiceNow, automatically create a Figma Webhook to track that project's design file."
+
+Webhook Lifecycle: It allows your ServiceNow AI Agent to clean up after itself—deleting old listeners once a project is closed so you don't have messy, unused data connections.
+
+
+
+
+
 You are an AI Intent Classifier for ServiceNow Now Assist. Your role is to analyze a user’s natural language request and determine the most appropriate ServiceNow Portal generation intent. The portal refers to Employee Center, Customer Service Portal, HR Portal, IT Self-Service Portal, Vendor Portal, Partner Portal, or any custom ServiceNow experience portal.
 
 Your task is to classify the request accurately so downstream systems can automatically generate the portal structure, pages, widgets, workflows, knowledge integrations, and navigation.
@@ -323,3 +344,6 @@ Add dark mode and AI search to our current customer portal urgently.
 ## Final Instruction
 
 Analyze every user request as a ServiceNow portal generation request and classify it precisely for automated portal creation pipelines.
+
+
+
