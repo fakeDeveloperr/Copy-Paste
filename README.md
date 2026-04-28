@@ -19,6 +19,94 @@ Webhook Lifecycle: It allows your ServiceNow AI Agent to clean up after itselfâ€
 
 
 
+
+3. Real-World Integrated Workflow
+If you enable both, you can achieve a "Closed Loop" automation:
+
+Trigger: A designer finishes a "Login Page" mockup in Figma.
+
+Webhook (Read): Figma sends a FILE_UPDATE notification to ServiceNow.
+
+AI Processing: Your ServiceNow Agent receives the data, "reads" the file (using your file_content:read scope), and sees a new layout.
+
+Action: The Agent automatically drafts a Service Portal Widget code and posts a comment back to Figma (using file_comments:write) saying: "Draft code generated in ServiceNow Ticket #12345."
+
+
+**the specific JSON payload that Figma sends to ServiceNow when a webhook is triggered**
+Understanding the JSON payload is key to building a robust **ServiceNow Flow** that parses design changes. When a webhook is triggered, Figma sends a `POST` request to your ServiceNow endpoint.
+
+Every payload (except for a simple `PING`) follows a similar structure, providing you with the file details and the **passcode** you set during registration for security.
+
+### 1. Common Payload Structure
+This is the core information sent for almost every event type (like `FILE_UPDATE` or `FILE_VERSION_UPDATE`).
+
+```json
+{
+  "event_type": "FILE_VERSION_UPDATE",
+  "file_key": "ABC123xyz789",
+  "file_name": "ServiceNow Portal Design",
+  "passcode": "your_secure_passcode_123",
+  "timestamp": "2026-04-28T11:52:00Z",
+  "triggered_by": {
+    "id": "987654",
+    "handle": "DesignUser"
+  },
+  "description": "Added new Login Page mockup",
+  "label": "V1.2 - Design Handover"
+}
+```
+
+---
+
+### 2. Event-Specific Variations
+Depending on the event you subscribe to, Figma adds extra "blocks" of data.
+
+#### **A. FILE_COMMENT (Collaborative Context)**
+If you want to sync comments to ServiceNow Tasks, the payload includes the actual text of the comment.
+* **Use Case:** Automatically creating a "Requirement Clarification" task in ServiceNow when a specific keyword is used in a Figma comment.
+
+```json
+{
+  "event_type": "FILE_COMMENT",
+  "comment_id": "11223344",
+  "comment_text": "Need to ensure this button is accessible per WCAG standards.",
+  "file_key": "ABC123xyz789",
+  "triggered_by": { "handle": "Lead Designer" }
+}
+```
+
+#### **B. LIBRARY_PUBLISH (Design System Updates)**
+This is the most powerful for **Design Ops**. It lists exactly which components or styles were changed.
+* **Use Case:** Triggering an automated audit of your ServiceNow CSS variables when "Brand Colors" are updated in Figma.
+
+```json
+{
+  "event_type": "LIBRARY_PUBLISH",
+  "library_item_data": [
+    { "key": "color_id_123", "name": "Brand Primary", "type": "STYLE" },
+    { "key": "comp_id_456", "name": "Standard Button", "type": "COMPONENT" }
+  ]
+}
+```
+
+---
+
+### 3. How ServiceNow "Consumes" This
+In ServiceNow, you typically handle this using a **Scripted REST API** or **Flow Designer**:
+
+1.  **Verification:** The script first checks if `request.body.passcode === "your_stored_passcode"`. If it doesn't match, it rejects the request for security.
+2.  **Parsing:** The script extracts the `file_key`.
+3.  **Action:** The AI Agent then uses that `file_key` to call the Figma **REST API** (using the `file_content:read` scope) to see exactly what changed and suggest the ServiceNow update.
+
+
+
+### Pro-Tip for Verification
+Figma includes the **passcode** in the body to help your application verify the request is actually coming from Figma. Always validate this in your ServiceNow inbound script before allowing the AI Agent to process the data!
+
+Since you now see how the data arrives, would you like a **JavaScript snippet** for a ServiceNow **Scripted REST API** that can receive and verify this Figma payload?
+
+
+
 You are an AI Intent Classifier for ServiceNow Now Assist. Your role is to analyze a userâ€™s natural language request and determine the most appropriate ServiceNow Portal generation intent. The portal refers to Employee Center, Customer Service Portal, HR Portal, IT Self-Service Portal, Vendor Portal, Partner Portal, or any custom ServiceNow experience portal.
 
 Your task is to classify the request accurately so downstream systems can automatically generate the portal structure, pages, widgets, workflows, knowledge integrations, and navigation.
