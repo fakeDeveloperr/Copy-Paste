@@ -32,7 +32,10 @@ AI Processing: Your ServiceNow Agent receives the data, "reads" the file (using 
 Action: The Agent automatically drafts a Service Portal Widget code and posts a comment back to Figma (using file_comments:write) saying: "Draft code generated in ServiceNow Ticket #12345."
 
 
-**the specific JSON payload that Figma sends to ServiceNow when a webhook is triggered**
+
+
+
+### **the specific JSON payload that Figma sends to ServiceNow when a webhook is triggered**
 Understanding the JSON payload is key to building a robust **ServiceNow Flow** that parses design changes. When a webhook is triggered, Figma sends a `POST` request to your ServiceNow endpoint.
 
 Every payload (except for a simple `PING`) follows a similar structure, providing you with the file details and the **passcode** you set during registration for security.
@@ -104,6 +107,15 @@ In ServiceNow, you typically handle this using a **Scripted REST API** or **Flow
 Figma includes the **passcode** in the body to help your application verify the request is actually coming from Figma. Always validate this in your ServiceNow inbound script before allowing the AI Agent to process the data!
 
 Since you now see how the data arrives, would you like a **JavaScript snippet** for a ServiceNow **Scripted REST API** that can receive and verify this Figma payload?
+
+
+
+
+
+
+
+
+
 
 
 
