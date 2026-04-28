@@ -1,3 +1,7 @@
+
+
+
+
 Figma Webhooks
 1. Webhooks: READ (The "Listener")
 With webhooks:read, your ServiceNow instance can listen for specific events in Figma. When an event happens, Figma "pokes" ServiceNow to tell it.
